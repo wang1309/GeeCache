@@ -1,4 +1,4 @@
-package GeeCache
+package geecache
 
 import (
 	"fmt"
@@ -20,18 +20,18 @@ func TestGetter(t *testing.T) {
 	}
 }
 
-var db = map[string]string{
+var db1 = map[string]string{
 	"Tom":  "630",
 	"Jack": "589",
 	"Sam":  "567",
 }
 
 func TestGet(t *testing.T) {
-	loadCounts := make(map[string]int, len(db))
+	loadCounts := make(map[string]int, len(db1))
 	gee := NewGroup("scores", 2<<10, GetterFunc(
 		func(key string) ([]byte, error) {
 			log.Println("[SlowDB] search key", key)
-			if v, ok := db[key]; ok {
+			if v, ok := db1[key]; ok {
 				if _, ok := loadCounts[key]; !ok {
 					loadCounts[key] = 0
 				}
@@ -41,7 +41,7 @@ func TestGet(t *testing.T) {
 			return nil, fmt.Errorf("%s not exist", key)
 		}))
 
-	for k, v := range db {
+	for k, v := range db1 {
 		if view, err := gee.Get(k); err != nil || view.String() != v {
 			t.Fatal("failed to get value of Tom")
 		} // load from callback function
